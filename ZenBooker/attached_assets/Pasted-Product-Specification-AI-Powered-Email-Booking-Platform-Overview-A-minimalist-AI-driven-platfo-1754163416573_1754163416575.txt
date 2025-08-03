@@ -1,0 +1,187 @@
+Product Specification: AI-Powered Email Booking Platform
+
+📆 Overview
+
+A minimalist AI-driven platform that lets businesses (e.g., salons, clinics) send personalized email campaigns to clients and track a single key metric: how many recipients booked an appointment via the email.
+
+🧰 Goal
+
+Create high-performing, AI-personalized email campaigns
+
+Track booked appointments only (via Square API)
+
+Keep UI clean and frictionless
+
+🏢 Pages & Features
+
+1. Overview Page
+
+Purpose: High-level performance dashboard
+
+UI Elements:
+
+[Tile] "New Appointments from Emails" - shows bookings in last 7 or 30 days
+
+[Tile] "Top Performing Campaign" - campaign name and # of bookings
+
+[Button] "Create Campaign"
+
+Notes:
+
+No open rate, no click rate, no vanity metrics.
+
+Pull booking data from Square API and match with email campaign ID (embedded in links).
+
+2. Clients Page
+
+Purpose: Manage customer list
+
+UI Elements:
+
+Client Table: Name, Email, Last Visit, Tags
+
+[Button] "Import from Square"
+
+[Button] "Upload CSV"
+
+Filters: "No Booking 60+ Days", "High Spend Clients"
+
+[Search Bar] by Name or Email
+
+[Modal or Drawer] View/Edit Client Details
+
+Logic:
+
+Pulls customer list from Square (via integration)
+
+Optional CSV Upload
+
+Uses Google Gemini API to clean and structure messy data (autodetect column headers, missing fields, typos)
+
+3. Campaigns Page
+
+Purpose: View history of campaigns sent
+
+UI Elements:
+
+List of Campaign Cards:
+
+Campaign Name
+
+Date Sent
+
+Recipients Count
+
+Appointments Booked (from Square tracking)
+
+Actions: View, Duplicate, Delete
+
+4. Create Campaign Page
+
+Purpose: Compose & send personalized campaigns
+
+Steps:
+
+Choose Audience
+
+Segments: "Inactive 30/60/90 Days", "New Clients", etc.
+
+Filter/tag system using client metadata
+
+AI Message Composer (Gemini API)
+
+Generates: subject line + body text
+
+Business owner can tweak text manually
+
+Insert Booking Link
+
+"Book Now" URL (Square Booking URL) auto-appended with campaign ID parameter for tracking
+
+Preview Email
+
+Desktop + mobile preview
+
+Send or Schedule
+
+Immediate or scheduled sending
+
+Campaign stored with timestamp + recipient list
+
+5. Integrations Page
+
+Purpose: Manage connections to Square and Email APIs
+
+UI Elements:
+
+[Connect Button] Square
+
+OAuth or API Key method
+
+Auto sync client data + appointments
+
+Background sync every 24 hours
+
+[Dropdown] Choose Email Delivery Provider:
+
+Options:
+
+SendGrid
+
+Postmark
+
+Amazon SES
+
+Input API key for chosen provider
+
+[Upload Section] CSV Upload (backup to Square)
+
+Backend cleanup via Gemini API
+
+6. Settings Page
+
+Purpose: Basic preferences
+
+UI Elements:
+
+Business Name & Logo Upload
+
+Reply-to Email
+
+Add Team Members
+
+Email Notifications (only; SMS = "Coming Soon")
+
+Terms, Privacy Policy Links
+
+🔍 Booking Attribution Flow
+
+Campaign contains unique tracking URL: https://booking.example.com?campaign_id=xyz
+
+Client clicks link in email
+
+Books appointment through Square booking page
+
+Square returns booking metadata
+
+Use webhook or poll to pull booking data
+
+Match campaign_id to stored campaign
+
+Update analytics on Overview + Campaign pages
+
+🔌 Email Sending Flow
+
+User sends campaign
+
+Platform builds payload:
+
+Recipients
+
+Subject & Body
+
+Tracking URL (with campaign ID)
+
+Uses selected Email API (SendGrid/Postmark/SES) to send
+
+Campaign metadata stored in database (ID, timestamp, recipient list)
